@@ -1,5 +1,4 @@
 package com.abielinski.wifiringer
-
 import android.app.*
 import android.content.Context
 import android.content.Intent
@@ -49,12 +48,15 @@ class WifiMonitorService : Service() {
             .build()
         connectivityManager.registerNetworkCallback(networkRequest, networkCallback)
 
+        saveServiceState(true)
+
         return START_STICKY
     }
 
     override fun onDestroy() {
         super.onDestroy()
         connectivityManager.unregisterNetworkCallback(networkCallback)
+        saveServiceState(false)
     }
 
     override fun onBind(intent: Intent?): IBinder? = null
@@ -64,15 +66,13 @@ class WifiMonitorService : Service() {
     }
 
     private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                CHANNEL_ID,
-                "Wi-Fi Monitor Service",
-                NotificationManager.IMPORTANCE_LOW
-            )
-            val notificationManager = getSystemService(NotificationManager::class.java)
-            notificationManager.createNotificationChannel(channel)
-        }
+        val channel = NotificationChannel(
+            CHANNEL_ID,
+            "Wi-Fi Monitor Service",
+            NotificationManager.IMPORTANCE_LOW
+        )
+        val notificationManager = getSystemService(NotificationManager::class.java)
+        notificationManager.createNotificationChannel(channel)
     }
 
     private fun createNotification(): Notification {
@@ -96,6 +96,11 @@ class WifiMonitorService : Service() {
     private fun getSelectedNetworks(): Set<String> {
         val sharedPrefs = getSharedPreferences("WifiPreferences", Context.MODE_PRIVATE)
         return sharedPrefs.getStringSet("selectedNetworks", emptySet()) ?: emptySet()
+    }
+
+    private fun saveServiceState(isRunning: Boolean) {
+        val sharedPrefs = getSharedPreferences("WifiPreferences", Context.MODE_PRIVATE)
+        sharedPrefs.edit().putBoolean("isServiceRunning", isRunning).apply()
     }
 
     companion object {

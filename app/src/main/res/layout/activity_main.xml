@@ -5,11 +5,17 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <Switch
+    <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/serviceSwitch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Enable Wi-Fi Monitor Service" />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/startAtBootSwitch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Start service at boot" />
 
     <TextView
         android:id="@+id/statusText"
@@ -18,22 +24,6 @@
         android:layout_marginTop="16dp"
         android:text="Service is not running" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Select Wi-Fi networks:" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/wifiListRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
-
-    <Button
-        android:id="@+id/refreshButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Refresh Wi-Fi List" />
 
 </LinearLayout>
