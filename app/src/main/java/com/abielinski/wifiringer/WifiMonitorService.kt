@@ -90,13 +90,22 @@ class WifiMonitorService : Service() {
     override fun onBind(intent: Intent?): IBinder? = null
 
     private fun setRingerMode(mode: Int) {
-        audioManager.ringerMode = mode
+        try {
+            audioManager.ringerMode = mode
+        } catch (_: SecurityException) {
+        } catch (_: Exception) {
+        }
     }
 
     private fun setMediaVolume(volume: Int) {
         val maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
         val desiredVolume = ((volume/100.0) * maxVolume).toInt()
-        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, desiredVolume, 0)
+
+        try {
+            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, desiredVolume, 0)
+        } catch (_: SecurityException) {
+        } catch (_: Exception) {
+        }
     }
 
     private fun createNotificationChannel() {

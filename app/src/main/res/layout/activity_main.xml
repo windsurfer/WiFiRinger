@@ -37,7 +37,7 @@
         android:id="@+id/startAtBootSwitch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Start service at when phone turns on"
+        android:text="Start service when phone turns on"
         android:paddingBottom="24dp"/>
 
     <LinearLayout
