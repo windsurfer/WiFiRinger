@@ -8,7 +8,6 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.net.wifi.WifiManager
-import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 
@@ -20,15 +19,44 @@ class WifiMonitorService : Service() {
 
     private val networkCallback = object : ConnectivityManager.NetworkCallback() {
         override fun onAvailable(network: Network) {
-            val currentSSID = getCurrentSSID()
-            if (shouldChangeRingerMode(currentSSID)) {
-                setRingerMode(AudioManager.RINGER_MODE_NORMAL)
+            val sharedPrefs = getSharedPreferences("WifiPreferences", Context.MODE_PRIVATE)
+            val mode = getRingerModeFromPref(sharedPrefs.getInt("connectSpinner", 2))
+            if (mode != 0) {
+                setRingerMode(mode)
+            }
+
+            if (sharedPrefs.getBoolean("volumeOnConnect", false)){
+                setMediaVolume(sharedPrefs.getInt("mediaVolumeOnConnect", 0))
             }
         }
 
         override fun onLost(network: Network) {
-            setRingerMode(AudioManager.RINGER_MODE_VIBRATE)
+            val sharedPrefs = getSharedPreferences("WifiPreferences", Context.MODE_PRIVATE)
+            val mode = getRingerModeFromPref(sharedPrefs.getInt("disconnectSpinner", 2))
+            if (mode != 0) {
+                setRingerMode(mode)
+            }
+
+            if (sharedPrefs.getBoolean("volumeOnDisconnect", false)){
+                setMediaVolume(sharedPrefs.getInt("mediaVolumeOnDisconnect", 0))
+            }
         }
+    }
+
+    private fun getRingerModeFromPref(pref: Int) :Int{
+        if (pref == 0){
+            return 0
+        }
+        if (pref == 1){
+            return AudioManager.RINGER_MODE_VIBRATE
+        }
+        if (pref == 2){
+            return AudioManager.RINGER_MODE_NORMAL
+        }
+        if (pref == 3){
+            return AudioManager.RINGER_MODE_SILENT
+        }
+        return 0
     }
 
     override fun onCreate() {
@@ -65,6 +93,12 @@ class WifiMonitorService : Service() {
         audioManager.ringerMode = mode
     }
 
+    private fun setMediaVolume(volume: Int) {
+        val maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
+        val desiredVolume = ((volume/100.0) * maxVolume).toInt()
+        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, desiredVolume, 0)
+    }
+
     private fun createNotificationChannel() {
         val channel = NotificationChannel(
             CHANNEL_ID,
@@ -83,20 +117,6 @@ class WifiMonitorService : Service() {
             .build()
     }
 
-    private fun getCurrentSSID(): String? {
-        val wifiInfo = wifiManager.connectionInfo
-        return wifiInfo?.ssid?.removeSurrounding("\"")
-    }
-
-    private fun shouldChangeRingerMode(ssid: String?): Boolean {
-        val selectedNetworks = getSelectedNetworks()
-        return selectedNetworks.isEmpty() || selectedNetworks.contains(ssid)
-    }
-
-    private fun getSelectedNetworks(): Set<String> {
-        val sharedPrefs = getSharedPreferences("WifiPreferences", Context.MODE_PRIVATE)
-        return sharedPrefs.getStringSet("selectedNetworks", emptySet()) ?: emptySet()
-    }
 
     private fun saveServiceState(isRunning: Boolean) {
         val sharedPrefs = getSharedPreferences("WifiPreferences", Context.MODE_PRIVATE)

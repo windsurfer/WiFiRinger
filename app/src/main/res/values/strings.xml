@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">WifiRinger</string>
+    <string-array name="action_states_array">
+        <item>Do Nothing</item>
+        <item>Set to Vibrate</item>
+        <item>Set to Ring</item>
+        <item>Set to Silent</item>
+    </string-array>
 </resources>

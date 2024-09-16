@@ -3,26 +3,127 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="24dp">
+
+    <ImageView
+        android:layout_width="128dp"
+        android:layout_height="128dp"
+        android:layout_gravity="center"
+        android:src="@drawable/wifiringer_icon"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="An app that mutes your phone when Wi-Fi disconnects and restores sound when reconnected."
+        android:paddingBottom="24dp"/>
 
     <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/serviceSwitch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Enable Wi-Fi Monitor Service" />
+        android:text="Enable WiFiRinger background service"
+        android:paddingBottom="8dp"/>
 
-    <androidx.appcompat.widget.SwitchCompat
-        android:id="@+id/startAtBootSwitch"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Start service at boot" />
 
     <TextView
         android:id="@+id/statusText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Service is not running" />
+        android:text="Service is not running"
+        android:paddingBottom="24dp"/>
+
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/startAtBootSwitch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Start service at when phone turns on"
+        android:paddingBottom="24dp"/>
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="24dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="When disconnected from Wi-Fi:"
+           />
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+        <Spinner
+            android:id="@+id/disconnectSpinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:spinnerMode="dropdown"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="24dp"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="When connected to Wi-Fi:"
+            />
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+        <Spinner
+            android:id="@+id/connectSpinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:spinnerMode="dropdown"/>
+
+    </LinearLayout>
+
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/modifyMediaVolumeDisconnectSwitch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Set media volume on disconnect"
+        android:paddingBottom="24dp"/>
+
+    <SeekBar
+        android:id="@+id/modifyVolumeDisconnectSeekbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:min="0"
+        android:max="100"
+        android:paddingBottom="24dp"
+        />
+
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/modifyMediaVolumeConnectSwitch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Set media volume on connect"
+        android:paddingBottom="24dp"/>
+
+    <SeekBar
+        android:id="@+id/modifyVolumeConnectSeekbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:min="0"
+        android:max="100"
+        android:paddingBottom="24dp"
+        />
 
 
 
