@@ -124,6 +124,11 @@
         android:max="100"
         android:paddingBottom="24dp"
         />
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="About"
+        android:id="@+id/get_info_button"/>
 
 
 

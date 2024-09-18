@@ -11,6 +11,7 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:allowBackup="true"
@@ -40,9 +41,10 @@
             android:foregroundServiceType="specialUse"
             tools:ignore="ForegroundServicePermission"
             android:enabled="true"
-            android:exported="false">
+            android:exported="false"
+            android:persistent="true" >
             <property android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
-                android:value="Needs to monitor wifi in background to switch ringer mode."/>
+                android:value="Needs to be running to be notified of wifi connection changing in background to switch ringer mode."/>
         </service>
 
         <receiver

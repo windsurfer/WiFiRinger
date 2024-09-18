@@ -1,16 +1,23 @@
 package com.abielinski.wifiringer
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.wifi.WifiManager
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Button
 import android.widget.SeekBar
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import android.Manifest
+import android.content.SharedPreferences
+import android.widget.Toast
 
 class MainActivity : AppCompatActivity() {
 
@@ -22,6 +29,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var modifyVolumeConnectSlider: SeekBar
     private lateinit var wifiManager: WifiManager
     private lateinit var statusText: TextView
+    private lateinit var infoButton: Button
+
+    private lateinit var preferenceChangeListener: SharedPreferences.OnSharedPreferenceChangeListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,19 +44,46 @@ class MainActivity : AppCompatActivity() {
         modifyVolumeDisconnectSlider = findViewById(R.id.modifyVolumeDisconnectSeekbar)
         modifyVolumeConnectSlider = findViewById(R.id.modifyVolumeConnectSeekbar)
         statusText = findViewById(R.id.statusText)
+        infoButton = findViewById(R.id.get_info_button)
+
+
         wifiManager = applicationContext.getSystemService(WIFI_SERVICE) as WifiManager
+
+        infoButton.setOnClickListener {
+
+        }
 
         setupServiceSwitch()
         setupStartAtBootSwitch()
         setupActionSpinners()
         setupVolumeSwitches()
         setupVolumeSliders()
+        setupPreferenceChangeListener()
         updateStatus()
+    }
+
+    private fun setupPreferenceChangeListener() {
+        preferenceChangeListener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
+            if (key == "isServiceRunning") {
+                println("Preference $key updated")
+                updateStatus()
+            }
+        }
+    }
+    override fun onResume() {
+        super.onResume()
+        val sharedPreferences = getSharedPreferences("WifiPreferences", MODE_PRIVATE)
+        sharedPreferences.registerOnSharedPreferenceChangeListener(preferenceChangeListener)
+    }
+    override fun onPause() {
+        super.onPause()
+        val sharedPreferences = getSharedPreferences("WifiPreferences", MODE_PRIVATE)
+        sharedPreferences.unregisterOnSharedPreferenceChangeListener(preferenceChangeListener)
     }
 
     private fun setupServiceSwitch() {
 
-        serviceSwitch.isChecked = isServiceRunning()
+        serviceSwitch.isChecked = getServicePref()
         serviceSwitch.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 startWifiMonitorService()
@@ -152,28 +189,69 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun startWifiMonitorService() {
-        val serviceIntent = Intent(this, WifiMonitorService::class.java)
-        startForegroundService(serviceIntent)
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+            != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), 0)
+            serviceSwitch.isChecked = false
+        }else {
+            val serviceIntent = Intent(this, WifiMonitorService::class.java)
+            startForegroundService(serviceIntent)
+            serviceSwitch.isChecked = true
+            updateStatus()
+        }
     }
 
     private fun stopWifiMonitorService() {
         val serviceIntent = Intent(this, WifiMonitorService::class.java)
         stopService(serviceIntent)
+        updateStatus()
     }
 
+
     private fun updateStatus() {
+        // This is a simple check. For a more robust solution, you might want to use ActivityManager
+
         val status = if (serviceSwitch.isChecked) {
-            "Service is running for all Wi-Fi networks"
+            if (getServicePref()){
+                "Service is running for all Wi-Fi networks"
+            }else{
+                "Setting is starting...."
+            }
         } else {
-            "Service is not running"
+            if (getServicePref()){
+                "Service is stopping...."
+            }else{
+                "Service is not running"
+            }
         }
         statusText.text = status
     }
 
 
-    private fun isServiceRunning(): Boolean {
-        // This is a simple check. For a more robust solution, you might want to use ActivityManager
+    private fun getServicePref(): Boolean {
         val sharedPrefs = getSharedPreferences("WifiPreferences", Context.MODE_PRIVATE)
         return sharedPrefs.getBoolean("isServiceRunning", false)
     }
+
+    private fun infoButtonClicked() {
+
+    }
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        if (requestCode == 0) { // The requestCode you used in requestPermissions
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                startWifiMonitorService()
+            } else {
+                // Permission denied
+                Toast.makeText(this, "We need to show a persistent notification to operate in the background.", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+
 }

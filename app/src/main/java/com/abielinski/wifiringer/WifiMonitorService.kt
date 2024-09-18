@@ -19,6 +19,7 @@ class WifiMonitorService : Service() {
 
     private val networkCallback = object : ConnectivityManager.NetworkCallback() {
         override fun onAvailable(network: Network) {
+
             val sharedPrefs = getSharedPreferences("WifiPreferences", Context.MODE_PRIVATE)
             val mode = getRingerModeFromPref(sharedPrefs.getInt("connectSpinner", 2))
             if (mode != 0) {
@@ -83,6 +84,7 @@ class WifiMonitorService : Service() {
 
     override fun onDestroy() {
         super.onDestroy()
+        stopForeground(STOP_FOREGROUND_REMOVE)
         connectivityManager.unregisterNetworkCallback(networkCallback)
         saveServiceState(false)
     }
@@ -111,7 +113,7 @@ class WifiMonitorService : Service() {
     private fun createNotificationChannel() {
         val channel = NotificationChannel(
             CHANNEL_ID,
-            "Wi-Fi Monitor Service",
+            "Wi-Fi Ringer",
             NotificationManager.IMPORTANCE_LOW
         )
         val notificationManager = getSystemService(NotificationManager::class.java)
@@ -119,10 +121,24 @@ class WifiMonitorService : Service() {
     }
 
     private fun createNotification(): Notification {
+        val intent = Intent(this, MainActivity::class.java).apply {
+            // Optionally, you can add some extras to pass data to the activity
+            //putExtra("key", "value")
+        }
+
+        // Wrap the intent into a PendingIntent
+        val pendingIntent: PendingIntent = PendingIntent.getActivity(
+            this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
         return NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("Wi-Fi Monitor")
+            .setContentTitle("WiFiRinger")
             .setContentText("Monitoring Wi-Fi connection")
-            .setSmallIcon(android.R.drawable.ic_dialog_info)
+            .setSmallIcon(R.drawable.wifiringer_icon)
+            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .setContentIntent(pendingIntent)
+            .setAutoCancel(false)
+            .setOngoing(true)
             .build()
     }
 
@@ -133,7 +149,7 @@ class WifiMonitorService : Service() {
     }
 
     companion object {
-        private const val CHANNEL_ID = "WifiMonitorChannel"
+        private const val CHANNEL_ID = "WifiRingerChannel"
         private const val NOTIFICATION_ID = 1
     }
 }
