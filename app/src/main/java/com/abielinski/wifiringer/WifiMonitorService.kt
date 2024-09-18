@@ -114,7 +114,7 @@ class WifiMonitorService : Service() {
         val channel = NotificationChannel(
             CHANNEL_ID,
             "Wi-Fi Ringer",
-            NotificationManager.IMPORTANCE_LOW
+            NotificationManager.IMPORTANCE_MIN
         )
         val notificationManager = getSystemService(NotificationManager::class.java)
         notificationManager.createNotificationChannel(channel)
@@ -134,7 +134,7 @@ class WifiMonitorService : Service() {
         return NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("WiFiRinger")
             .setContentText("Monitoring Wi-Fi connection")
-            .setSmallIcon(R.drawable.wifiringer_icon)
+            .setSmallIcon(R.drawable.transparent_icon)
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .setContentIntent(pendingIntent)
             .setAutoCancel(false)
