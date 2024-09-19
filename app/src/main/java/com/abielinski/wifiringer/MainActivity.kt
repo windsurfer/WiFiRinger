@@ -50,7 +50,7 @@ class MainActivity : AppCompatActivity() {
         wifiManager = applicationContext.getSystemService(WIFI_SERVICE) as WifiManager
 
         infoButton.setOnClickListener {
-
+            infoButtonClicked()
         }
 
         setupServiceSwitch()
@@ -234,7 +234,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun infoButtonClicked() {
-
+        val intent = Intent(this, AboutActivity::class.java)
+        startActivity(intent)
     }
     override fun onRequestPermissionsResult(
         requestCode: Int,
