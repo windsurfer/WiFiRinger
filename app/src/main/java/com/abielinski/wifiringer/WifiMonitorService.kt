@@ -131,12 +131,20 @@ class WifiMonitorService : Service() {
             this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
+        // Create an intent to notify the service when the notification is dismissed
+        val deleteIntent = Intent(this, WifiMonitorService::class.java).apply {
+            action = "NOTIFICATION_DISMISSED"
+        }
+        val deletePendingIntent: PendingIntent = PendingIntent.getService(
+            this, 0, deleteIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
         return NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("WiFiRinger")
             .setContentText("Monitoring Wi-Fi connection")
             .setSmallIcon(R.drawable.transparent_icon)
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .setContentIntent(pendingIntent)
+            .setDeleteIntent(deletePendingIntent)
             .setAutoCancel(false)
             .setOngoing(true)
             .build()

@@ -18,6 +18,7 @@ import androidx.core.content.ContextCompat
 import android.Manifest
 import android.content.SharedPreferences
 import android.widget.Toast
+import com.judemanutd.autostarter.AutoStartPermissionHelper
 
 class MainActivity : AppCompatActivity() {
 
@@ -63,7 +64,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupPreferenceChangeListener() {
-        preferenceChangeListener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
+        preferenceChangeListener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
             if (key == "isServiceRunning") {
                 println("Preference $key updated")
                 updateStatus()
@@ -147,8 +148,18 @@ class MainActivity : AppCompatActivity() {
     private fun setupStartAtBootSwitch() {
         val sharedPrefs = getSharedPreferences("WifiPreferences", Context.MODE_PRIVATE)
         startAtBootSwitch.isChecked = sharedPrefs.getBoolean("startAtBoot", false)
-        startAtBootSwitch.setOnCheckedChangeListener { _, isChecked ->
+        startAtBootSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
             sharedPrefs.edit().putBoolean("startAtBoot", isChecked).apply()
+            if (isChecked){
+                if (AutoStartPermissionHelper.getInstance().isAutoStartPermissionAvailable(buttonView.context) &&
+                    !AutoStartPermissionHelper.getInstance().getAutoStartPermission(buttonView.context, true)){
+
+                    //startAtBootSwitch.isChecked = false
+                    //sharedPrefs.edit().putBoolean("startAtBoot", false).apply()
+
+                    Toast.makeText(this, "Your device may require additional permissions to start at boot.", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 
@@ -209,7 +220,7 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun updateStatus() {
-        // This is a simple check. For a more robust solution, you might want to use ActivityManager
+        // This is a simple check. For a more robust solution, we should use ActivityManager
 
         val status = if (serviceSwitch.isChecked) {
             if (getServicePref()){
