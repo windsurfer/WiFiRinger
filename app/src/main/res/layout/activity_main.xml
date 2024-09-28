@@ -127,7 +127,15 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:text="Troubleshooting"
+        android:padding="16dp"
+        android:id="@+id/troubleshooting_button"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:text="About"
+        android:padding="16dp"
         android:id="@+id/get_info_button"/>
 
 

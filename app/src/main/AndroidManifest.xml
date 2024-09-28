@@ -41,6 +41,12 @@
             android:theme="@style/Theme.WifiRinger">
         </activity>
 
+        <activity
+            android:name=".TroubleshootingActivity"
+            android:exported="false"
+            android:theme="@style/Theme.WifiRinger">
+        </activity>
+
 
         <service
             android:name=".WifiMonitorService"

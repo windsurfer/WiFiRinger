@@ -30,6 +30,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var modifyVolumeConnectSlider: SeekBar
     private lateinit var wifiManager: WifiManager
     private lateinit var statusText: TextView
+    private lateinit var troubleshootingButton: Button
     private lateinit var infoButton: Button
 
     private lateinit var preferenceChangeListener: SharedPreferences.OnSharedPreferenceChangeListener
@@ -45,11 +46,15 @@ class MainActivity : AppCompatActivity() {
         modifyVolumeDisconnectSlider = findViewById(R.id.modifyVolumeDisconnectSeekbar)
         modifyVolumeConnectSlider = findViewById(R.id.modifyVolumeConnectSeekbar)
         statusText = findViewById(R.id.statusText)
+        troubleshootingButton = findViewById(R.id.troubleshooting_button)
         infoButton = findViewById(R.id.get_info_button)
 
 
         wifiManager = applicationContext.getSystemService(WIFI_SERVICE) as WifiManager
 
+        troubleshootingButton.setOnClickListener {
+            troubleshootingButtonClicked()
+        }
         infoButton.setOnClickListener {
             infoButtonClicked()
         }
@@ -244,6 +249,10 @@ class MainActivity : AppCompatActivity() {
         return sharedPrefs.getBoolean("isServiceRunning", false)
     }
 
+    private fun troubleshootingButtonClicked() {
+        val intent = Intent(this, TroubleshootingActivity::class.java)
+        startActivity(intent)
+    }
     private fun infoButtonClicked() {
         val intent = Intent(this, AboutActivity::class.java)
         startActivity(intent)

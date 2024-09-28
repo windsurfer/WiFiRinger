@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".TroubleshootingActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginBottom="16dp"
+            android:src="@drawable/wifiringer_icon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Troubleshooting"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:paddingBottom="16dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Problem: Persistent notification not showing"
+            android:textStyle="bold"
+            android:paddingBottom="8dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Solution: \n- Go to your phone's Settings > Apps > WiFiRinger > Notifications. \n- Make sure that notifications are enabled and that the 'Persistent Notification' option is turned on."
+            android:paddingBottom="16dp"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Open notification settings"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp"
+            android:id="@+id/open_notifications"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Problem: App not starting on reboot"
+            android:textStyle="bold"
+            android:paddingBottom="8dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Solution: \n- Some phones require additional permissions for apps to start on reboot. \n- Go to your phone's Settings > Apps > WiFiRinger > Permissions. \n- Make sure that 'Autostart' or a similar permission is enabled."
+            android:paddingBottom="16dp"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Open application settings"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp"
+            android:id="@+id/open_permissions"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Problem: App keeps closing after a few hours when Battery Saver is on"
+            android:textStyle="bold"
+            android:paddingBottom="8dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Solution: \n- Battery saver modes can sometimes restrict background activity. \n- Try turning off battery saver or adding our app to the battery saver's whitelist."
+            android:paddingBottom="16dp"/>
+
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="More info (opens external page)"
+            android:padding="16dp"
+            android:id="@+id/more_info_button"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Close"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp"
+            android:id="@+id/close_button"/>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            />
+
+    </LinearLayout>
+
+
+</ScrollView>
